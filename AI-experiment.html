@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Experiment</title>
+    <script src="https://unpkg.com/jspsych@8.2.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-instructions@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-preload@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-slider-response@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-likert@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-multi-choice@2.1.0"></script>
+    <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" />
+        
+  </head>
+    <body>
+    </body>
+    <script>
+        // Set jsPsych display element to wrapper
+        const jsPsych = initJsPsych();
+        
+        // Define the timeline
+        const timeline = [];
+        
+        // Preload images
+        const preload = {
+            type: jsPsychPreload,
+            images: ['img/human.png', 'img/ai.png']
+        };
+        timeline.push(preload); // Push
+
+
+        // Welcome page and scenario page
+        const trial_welcome = {
+            type: jsPsychInstructions,
+            pages: [
+            `<div style="text-align: right;">
+                <div style="text-align: left; width: 1000px;">
+                <h1 style="line-height: 1.2;">A warm welcome, and thank you very much for taking part in our online experiment!</h1>
+                <p>In this study, we are interested in how people experience decisions and evaluations that are made or supported by artificial intelligence (AI). Our focus is exclusively on the perspective of those who are affected by these decisions. AI systems are increasingly being used in areas where assessments about individuals are made, such as job applications, medicine, education, or administrative procedures. For those affected, such evaluations can have direct and personal consequences. Our goal is to understand what preferences individuals have regarding these AI-supported assessments.</p>
+                <p>Your responses will help us better understand how decision-making processes can be designed to meet the needs of those affected.</p>
+                <p>All information is collected anonymously and analyzed solely for scientific purposes. The experiment takes only a few minutes. Please read the following instructions carefully and answer the questions as honestly and spontaneously as possible.</p>
+                <p>Thank you very much for your support!</p>
+            </div>`,
+            `<div style="text-align: right;">
+                <div style="text-align: left; width: 1000px;">
+                <h2>Your scenario</h2>
+                <p>You are applying for a position that perfectly matches your career aspirations and for which you would fit well. You would be happy to get this position.The company uses a selection process that combines human recruiters and algorithmic assessments. You can choose the way of evaluating your application.</p>
+            </div>`
+            ],
+            button_label_next: `Next`,
+            allow_backward: false,
+            show_clickable_nav: true
+        };
+        timeline.push(trial_welcome); // Push
+
+
+        // Trash question trial
+        const trial_trash = {
+            type: jsPsychSurveyMultiChoice,
+            questions: [
+                {
+                    prompt: "<h2 style='width: 1000px;'>Did you actually read the previous scenario, or did you just skip through it? Please be honest. Your answer won't have any negative consequences.</h2>", 
+                    name: 'trash', 
+                    options: ["Yes, I read the scenario", "No, I didn't read the scenario"], 
+                    required: true,
+                    horizontal: true
+                }
+            ],
+            button_label: "Next >",
+            on_load: function () {
+                const btn = document.querySelector(".jspsych-btn");
+                if (btn) {
+                    btn.style.display = "block";
+                    btn.style.marginLeft = "auto";   // Button on the right side
+                    btn.style.marginRight = "0";
+                }
+            }
+        };
+        timeline.push(trial_trash); // Push
+
+
+        // Decision page
+        const trial_decision = {
+            type: jsPsychHtmlButtonResponse,
+            stimulus: `
+            <div style="text-align: right; height: 600px;">
+                <h2 style="margin-bottom: 60px;">By whom would you want to be evaluated in this situation?</h2>
+                
+                <div id="options-container" style="display: flex; justify-content: center; gap: 30px; margin-bottom: 40px; flex-wrap: wrap;">
+                    
+                    <!-- Option 1: Human -->
+                    <div class="option-button" data-value="human" style="
+                        border-radius: 10px;
+                        width: 250px;
+                        background-color: white;
+                        box-sizing: border-box;
+                    ">
+                        <div style="
+                            cursor: pointer;
+                            padding: 20px;
+                            border: 3px solid #ccc;
+                            border-radius: 10px;
+                            width: 250px;
+                            text-align: center;
+                            box-sizing: border-box;
+                        ">
+                            <img src="img/human.png" alt="Human" style="width: 100px; height: 100px; margin: 0 auto 10px; border-radius: 5px; display: block;">
+                            <p style="font-weight: bold; font-size: 16px; margin: 10px 0;">Human</p>
+                            <div style="text-align: left; font-size: 16px; color: #555; margin-top: 10px; padding-top: 10px; border-top: 2px solid #ccc;">
+                                The human without assistance is 85% reliable in their decisions.
+                            </div>
+                        </div>
+                        <div class="explanation" style="display: none; position: relative; text-align: left; font-size: 16px; color: #555; margin-top: 20px; padding: 20px; border: 2px solid #ccc; border-radius: 10px;">
+                            <svg width="28" height="14" viewBox="0 0 28 14" style="position:absolute; top:-14px; left:24px; z-index:0;" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <!-- outer border triangle (stroke) -->
+                                <polygon points="0,14 14,0 28,14" fill="none" stroke="#ccc" stroke-width="2" />
+                                <!-- inner white triangle to cover the overlap (no stroke) -->
+                                <polygon points="2,14 14,2 26,14" fill="#fff" stroke="none" />
+                            </svg>
+                            You will be evaluated by an experienced human based on their expertise and judgment.
+                        </div>
+                    </div>
+                    
+                    <!-- Option 2: Human & AI -->
+                    <div class="option-button" data-value="hybrid" style="
+                        border-radius: 10px;
+                        width: 250px;
+                        background-color: white;
+                        box-sizing: border-box;
+                    ">
+                        <div style="
+                            cursor: pointer;
+                            padding: 20px;
+                            border: 3px solid #ccc;
+                            border-radius: 10px;
+                            width: 250px;
+                            text-align: center;
+                            box-sizing: border-box;
+                        ">
+                            <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                <img src="img/human.png" alt="Human" style="width: 100px; height: 100px; border-radius: 5px; display: block;">
+                                <img src="img/ai.png" alt="AI" style="width: 100px; height: 100px; border-radius: 5px; display: block;">
+                            </div>
+                            <p style="font-weight: bold; font-size: 16px; margin: 10px 0;">Human and AI System</p>
+                            <div style="text-align: left; font-size: 16px; color: #555; margin-top: 10px; padding-top: 10px; border-top: 2px solid #ccc;">
+                                The human assisted by AI is 90% reliable in their decisions.
+                            </div>
+                        </div>
+                        <div class="explanation" style="display: none; position: relative; text-align: left; font-size: 16px; color: #555; margin-top: 20px; padding: 20px; border: 2px solid #ccc; border-radius: 10px;">
+                            <svg width="28" height="14" viewBox="0 0 28 14" style="position:absolute; top:-14px; left:24px; z-index:0;" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <!-- outer border triangle (stroke) -->
+                                <polygon points="0,14 14,0 28,14" fill="none" stroke="#ccc" stroke-width="2" />
+                                <!-- inner white triangle to cover the overlap (no stroke) -->
+                                <polygon points="2,14 14,2 26,14" fill="#fff" stroke="none" />
+                            </svg>
+                            You will be evaluated by a combination of artificial intelligence analysis and human assessment.
+                        </div>
+                    </div>
+                    
+                    <!-- Option 3: AI -->
+                    <div class="option-button" data-value="ai" style="
+                        border-radius: 10px;
+                        width: 250px;
+                        background-color: white;
+                        box-sizing: border-box;
+                    ">
+                        <div style="
+                            cursor: pointer;
+                            padding: 20px;
+                            border: 3px solid #ccc;
+                            border-radius: 10px;
+                            width: 250px;
+                            text-align: center;
+                            box-sizing: border-box;
+                        ">
+                            <img src="img/ai.png" alt="AI System" style="width: 100px; height: 100px; margin: 0 auto 10px; border-radius: 5px; display: block;">
+                            <p style="font-weight: bold; font-size: 16px; margin: 10px 0;">AI System</p>
+                            <div style="text-align: left; font-size: 16px; color: #555; margin-top: 10px; padding-top: 10px; border-top: 2px solid #ccc;">
+                                The AI without assistance is 95% reliable in their decisions.
+                            </div>
+                        </div>
+                        <div class="explanation" style="display: none; position: relative; text-align: left; font-size: 16px; color: #555; margin-top: 20px; padding: 20px; border: 2px solid #ccc; border-radius: 10px;">
+                            <svg width="28" height="14" viewBox="0 0 28 14" style="position:absolute; top:-14px; left:24px; z-index:0;" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <!-- outer border triangle (stroke) -->
+                                <polygon points="0,14 14,0 28,14" fill="none" stroke="#ccc" stroke-width="2" />
+                                <!-- inner white triangle to cover the overlap (no stroke) -->
+                                <polygon points="2,14 14,2 26,14" fill="#fff" stroke="none" />
+                            </svg>
+                            You will be evaluated by an experienced AI based on their expertise and judgment.
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- Next-button is created dynamically after a selection is made -->
+                <div style="display: flex; justify-content: flex-end; margin-top: 40px;">
+                    <button id="next-button" class="jspsych-btn" style="display: none;" disabled>Next ></button>
+                </div>
+            </div>
+            `,
+            choices: [],
+            response_ends_trial: false,
+            on_load: function() {
+                // Add hover and click functionality
+                const optionButtons = document.querySelectorAll('.option-button');
+                let selectedValue = null;
+                
+                optionButtons.forEach(button => {
+                    const innerDiv = button.querySelector('div:first-child');
+
+                    if (innerDiv) {
+                        // Hover enter (only on the top box)
+                        innerDiv.addEventListener('mouseenter', function() {
+                            const parent = button;
+                            if (!selectedValue || !parent.classList.contains('selected')) {
+                                parent.querySelector('.explanation').style.display = 'block';
+                                innerDiv.style.backgroundColor = '#f5f5f5';
+                            }
+                        });
+
+                        // Hover leave (only on the top box)
+                        innerDiv.addEventListener('mouseleave', function() {
+                            const parent = button;
+                            if (!selectedValue || !parent.classList.contains('selected')) {
+                                parent.querySelector('.explanation').style.display = 'none';
+                                innerDiv.style.backgroundColor = 'white';
+                            }
+                        });
+
+                        // Click to select (only on the top box)
+                        innerDiv.addEventListener('click', function(e) {
+                            e.preventDefault();
+
+                            // Remove selection from all buttons
+                            optionButtons.forEach(b => {
+                                const bInnerDiv = b.querySelector('div:first-child');
+                                b.classList.remove('selected');
+                                if (bInnerDiv) {
+                                    bInnerDiv.style.borderColor = '#ccc';
+                                    bInnerDiv.style.backgroundColor = 'white';
+                                } else {
+                                    b.style.borderColor = '#ccc';
+                                    b.style.backgroundColor = 'white';
+                                }
+                                b.querySelector('.explanation').style.display = 'none';
+                            });
+
+                            selectedValue = button.dataset.value;
+                            // Select this button
+                            button.classList.add('selected');
+                            innerDiv.style.borderColor = '#007bff';
+                            innerDiv.style.backgroundColor = '#e7f3ff';
+                            button.querySelector('.explanation').style.display = 'block';
+                        });
+                    }
+                });
+
+                // Enable next button when an option is selected
+                const nextButton = document.getElementById('next-button');
+                optionButtons.forEach(button => {
+                    const innerDiv = button.querySelector('div:first-child');
+                    if (innerDiv) {
+                        innerDiv.addEventListener('click', function() {
+                            nextButton.disabled = false;
+                            nextButton.style.display = 'block';
+                        });
+                    }
+                });
+
+                // Handle next button click
+                nextButton.addEventListener('click', function() {
+                    if (!nextButton.disabled && selectedValue) {
+                        jsPsych.finishTrial({
+                            selection: selectedValue
+                        });
+                    }
+                });
+            },
+            on_finish: function(data) {
+            }
+        };
+        timeline.push(trial_decision); // Push
+
+
+        // Manipulation check trial
+        const trial_manipulation = {
+            type: jsPsychHtmlSliderResponse,
+            stimulus: `<div style="margin-bottom: 60px;"> <h2>How high do you perceive your personal risk to be in this scenario?</h2> </div>`,
+            require_movement: true,
+            labels: [
+                "<div style='line-height: 1;'><p>1</p><p>Very low</p></div>",
+                "<div style='line-height: 1;'><p>2</p><p>Low</p></div>",
+                "<div style='line-height: 1;'><p>3</p><p>Neutral</p></div>",
+                "<div style='line-height: 1;'><p>4</p><p>High</p></div>",
+                "<div style='line-height: 1;'><p>5</p><p>Very High</p></div>"
+            ],
+            step: 25,
+            button_label: "Next >",
+            on_load: function () {
+                const btn = document.querySelector(".jspsych-btn");
+
+                if (btn) {
+                    btn.style.display = "block";
+                    btn.style.marginLeft = "auto";   // Button on the right side
+                    btn.style.marginRight = "0";
+                }
+            }
+        };
+        timeline.push(trial_manipulation); // Push
+
+
+        // affinity for technology trial
+        const likert_scale = [
+            "Completely untrue", 
+            "Mostly untrue", 
+            "Rather untrue", 
+            "Rather true", 
+            "Mostly true",
+            "Completely true"
+        ];
+        const trial_affinity = {
+            type: jsPsychSurveyLikert,
+            preamble: `
+            <div style="width: 1000px; text-align: left;"><h3>The following questions are about your interaction with technical systems. "Technical systems" refers to both apps and other software applications, as well as complete digital devices (e.g., mobile phones, computers, TVs, car navigation systems).</h3>
+            <h2 style="padding-top: 32px">Please indicate the extent to which you agree with the following statements.</h2>
+            </div>`,
+            questions: [
+                {prompt: `<div style="text-align: left;">I enjoy taking a closer look at technical systems.</div>`, name: 'Q1', labels: likert_scale},
+                {prompt: `<div style="text-align: left;">I enjoy trying out the functions of new technical systems.</div>`, name: 'Q2', labels: likert_scale},
+                {prompt: `<div style="text-align: left;">Primarily, I deal with technical systems because I have to.</div>`, name: 'Q3', labels: likert_scale},
+                {prompt: `<div style="text-align: left;">When I encounter a new technical system, I thoroughly try it out.</div>`, name: 'Q4', labels: likert_scale},
+                {prompt: `<div style="text-align: left;">I really enjoy spending time getting to know a new technical system.</div>`, name: 'Q5', labels: likert_scale},
+                {prompt: `<div style="text-align: left;">It is enough for me that a technical system works; I don’t care how or why.</div>`, name: 'Q6', labels: likert_scale},
+                {prompt: `<div style="text-align: left;">I try to understand exactly how a technical system works.</div>`, name: 'Q7', labels: likert_scale},
+                {prompt: `<div style="text-align: left;">It is enough for me to know the basic functions of a technical system.</div>`, name: 'Q8', labels: likert_scale},
+                {prompt: `<div style="text-align: left;">I try to make full use of the capabilities of a technical system.</div>`, name: 'Q9', labels: likert_scale},
+            ],
+            randomize_question_order: true,
+            button_label: "Next >",
+            on_load: function () {
+                const btn = document.querySelector(".jspsych-btn");
+
+                if (btn) {
+                    btn.style.display = "block";
+                    btn.style.marginLeft = "auto";   // Button on the right side
+                    btn.style.marginRight = "0";
+                }
+            }
+        };
+        timeline.push(trial_affinity); // Push
+
+
+        // End trial
+        const trial_end = {
+            type: jsPsychInstructions,
+            pages: [
+            `<div style="text-align: right;">
+                <div style="text-align: left; width: 1000px;">
+                <h1 style="line-height: 1.2;">Thank you for your participation!</h1>
+                <p>The experiment is now over. You may close this window.</p>
+            </div>`
+            ],
+            show_clickable_nav: false
+        };
+        timeline.push(trial_end); // Push
+
+
+        //Run the experiment
+        jsPsych.run(timeline);
+    
+  </script>
+</html>
