@@ -122,7 +122,7 @@
 
         // Decision page
         const trial_decision = {
-            type: jsPsychHtmlButtonResponse, //TODO hier muss nochmal das Szenario eingeblendet werden: kann man über <p>`+this_scenario.text+`</p> tun, aber ich will hier nichts zerschiessen
+            type: jsPsychHtmlButtonResponse, //TODO hier muss nochmal das Szenario eingeblendet werden: kann man über <p>${this_scenario.text}</p> tun, aber ich will hier nichts zerschiessen
             //TODO: das "without assistance" wording finde ich noch etwas unglücklich. vielleicht können wir das anders/besser beschreiben
             stimulus: `
             <div style="text-align: right; height: 600px;">
@@ -342,6 +342,14 @@
         const taegsScale = ["Strongly disagree", "Somewhat disagree", "Neither agree nor disagree", "Somewhat agree", "Strongly agree"];
         const instructions_taegs = {
                     type: jsPsychHtmlKeyboardResponse,
+                    on_load: () => {
+                        const btn = document.getElementById("continue-btn");
+                        if (btn) {
+                        btn.addEventListener("click", () => {
+                            jsPsych.finishTrial({ response: "button" });
+                        });
+                        }
+                    },
                     stimulus: `
                         <div style="
                             max-width: 700px;
@@ -355,11 +363,15 @@
                             <p>The term "electronic devices" refers to devices such as computers, tablets, cell phones, digital cameras, smartwatches, digital smart home assistants, ATMs, ticket machines or new systems in cars such as navigation systems.</p>
                             <p>We are not referring to tools such as drills, saws, hammers, lawn mowers or simple household appliances such as toasters, hand mixers, kettles, or vehicles and vehicle engines.</p>
                             <p> Press the any key to continue or press the button below. </p>
+                        <div style="text-align: center; margin-top: 16px;">
+                            <button id="continue-btn" class="jspsych-btn">
+                            Continue
+                            </button>
+                        </div>
                         </div>
                     `
                 };
 
-                //TODO: mobil nutzbar machen
 
         const taegs = {
             type: jsPsychSurveyLikert,
@@ -379,6 +391,14 @@
         // End trial
         const trial_end = {
             type: jsPsychHtmlKeyboardResponse,
+            on_load: () => {
+                        const btn = document.getElementById("continue-btn");
+                        if (btn) {
+                        btn.addEventListener("click", () => {
+                            jsPsych.finishTrial({ response: "button" });
+                        });
+                        }
+                    },
             stimulus:
             `<div style="text-align: right;">
                 <div style="text-align: left; width: 1000px;">
@@ -389,11 +409,17 @@
                 <br> <br>
                 <p> Press any key on the keyboard or press the button below to finish the experiment. Please wait until you are 
                     redirected to Prolific. </p> 
+
+
+                <div style="text-align: center; margin-top: 16px;">
+                            <button id="continue-btn" class="jspsych-btn">
+                            Continue
+                            </button>
+                        </div>
             </div>`
             ,
             show_clickable_nav: false
         };
-            //TODO: mobil nutzbar machen
 
         /* 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
