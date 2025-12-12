@@ -19,7 +19,13 @@
     </body>
     <script>
         // Set jsPsych display element to wrapper
-        const jsPsych = initJsPsych();
+        const jsPsych = initJsPsych({
+        on_finish: function() {
+            jsPsych.data.displayData();
+
+            jsPsych.data.get().filter({trty: "questions"}).localSave('csv','data.csv');
+        }
+    });
         
         // Define the timeline
         const timeline = [];
@@ -40,6 +46,28 @@
         const this_scenario =
             scenarios[Math.floor(Math.random() * scenarios.length)]; 
 
+        const values = [70, 77, 84, 91, 98];
+
+        const sampled_values = Array.from({ length: 3 }, () =>
+        values[Math.floor(Math.random() * values.length)]
+        );
+
+        const human_reliability = sampled_values[0];
+        const ai_reliability = sampled_values[1];
+        const hybrid_reliability = sampled_values[2];
+
+        const min_viewing_time_scenario = 3000; //TODO: kann man hier ändern, wie lange Leute das Szenario lesen müssen bevor sie weitermachen können
+
+        // ADD Condition information to the data
+        jsPsych.data.addProperties({
+            subject: "TODO for JATOS",
+            domain: this_scenario.domain,
+            risk: this_scenario.risk,
+            human_reliability: human_reliability,
+            ai_reliability: ai_reliability,
+            hybrid_reliability: hybrid_reliability
+        });
+
         // Welcome page and scenario page
         const trial_welcome = {
             type: jsPsychInstructions,
@@ -47,12 +75,29 @@
             `<div style="text-align: right;">
                 <div style="text-align: left; width: 1000px;">
                 <h2>Welcome! Imagine the Following Scenario</h2>
-                <p>`+this_scenario.text+`</p>
+                <p>${this_scenario.text}</p>
             </div>`
             ],
             button_label_next: `Next`,
             allow_backward: false,
-            show_clickable_nav: true
+            show_clickable_nav: true,
+            on_load: () => {
+                const nextBtn =
+                document.querySelector("#jspsych-instructions-next") ||
+                document.querySelector("button.jspsych-btn"); // fallback
+
+                if (!nextBtn) return;
+
+                nextBtn.disabled = true;
+                nextBtn.style.opacity = "0.5";
+                nextBtn.style.cursor = "not-allowed";
+
+                setTimeout(() => {
+                nextBtn.disabled = false;
+                nextBtn.style.opacity = "1";
+                nextBtn.style.cursor = "pointer";
+                }, min_viewing_time_scenario);
+            }
         };
 
         // Trash question trial
@@ -77,7 +122,8 @@
 
         // Decision page
         const trial_decision = {
-            type: jsPsychHtmlButtonResponse,
+            type: jsPsychHtmlButtonResponse, //TODO hier muss nochmal das Szenario eingeblendet werden: kann man über <p>`+this_scenario.text+`</p> tun, aber ich will hier nichts zerschiessen
+            //TODO: das "without assistance" wording finde ich noch etwas unglücklich. vielleicht können wir das anders/besser beschreiben
             stimulus: `
             <div style="text-align: right; height: 600px;">
                 <h2 style="margin-bottom: 60px;">By whom would you want to be evaluated in this situation?</h2>
@@ -103,7 +149,7 @@
                             <img src="img/human.png" alt="Human" style="width: 100px; height: 100px; margin: 0 auto 10px; border-radius: 5px; display: block;">
                             <p style="font-weight: bold; font-size: 16px; margin: 10px 0;">Human</p>
                             <div style="text-align: left; font-size: 16px; color: #555; margin-top: 10px; padding-top: 10px; border-top: 2px solid #ccc;">
-                                The human without assistance is 85% reliable in their decisions.
+                                The human without assistance is `+human_reliability+`% reliable in their decisions.
                             </div>
                         </div>
                         <div class="explanation" style="display: none; position: relative; text-align: left; font-size: 16px; color: #555; margin-top: 20px; padding: 20px; border: 2px solid #ccc; border-radius: 10px;">
@@ -139,7 +185,7 @@
                             </div>
                             <p style="font-weight: bold; font-size: 16px; margin: 10px 0;">Human and AI System</p>
                             <div style="text-align: left; font-size: 16px; color: #555; margin-top: 10px; padding-top: 10px; border-top: 2px solid #ccc;">
-                                The human assisted by AI is 90% reliable in their decisions.
+                                The human assisted by AI is `+hybrid_reliability+`% reliable in their decisions.
                             </div>
                         </div>
                         <div class="explanation" style="display: none; position: relative; text-align: left; font-size: 16px; color: #555; margin-top: 20px; padding: 20px; border: 2px solid #ccc; border-radius: 10px;">
@@ -172,7 +218,7 @@
                             <img src="img/ai.png" alt="AI System" style="width: 100px; height: 100px; margin: 0 auto 10px; border-radius: 5px; display: block;">
                             <p style="font-weight: bold; font-size: 16px; margin: 10px 0;">AI System</p>
                             <div style="text-align: left; font-size: 16px; color: #555; margin-top: 10px; padding-top: 10px; border-top: 2px solid #ccc;">
-                                The AI without assistance is 95% reliable in their decisions.
+                                The AI without assistance is `+ai_reliability+`% reliable in their decisions.
                             </div>
                         </div>
                         <div class="explanation" style="display: none; position: relative; text-align: left; font-size: 16px; color: #555; margin-top: 20px; padding: 20px; border: 2px solid #ccc; border-radius: 10px;">
