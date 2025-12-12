@@ -283,43 +283,33 @@
 
 
         // affinity for technology trial
-        const likert_scale = [
-            "Completely untrue", 
-            "Mostly untrue", 
-            "Rather untrue", 
-            "Rather true", 
-            "Mostly true",
-            "Completely true"
-        ];
-        const trial_affinity = {
-            type: jsPsychSurveyLikert,
-            preamble: `
-            <div style="width: 1000px; text-align: left;"><h3>The following questions are about your interaction with technical systems. "Technical systems" refers to both apps and other software applications, as well as complete digital devices (e.g., mobile phones, computers, TVs, car navigation systems).</h3>
-            <h2 style="padding-top: 32px">Please indicate the extent to which you agree with the following statements.</h2>
-            </div>`,
-            questions: [
-                {prompt: `<div style="text-align: left;">I enjoy taking a closer look at technical systems.</div>`, name: 'Q1', labels: likert_scale},
-                {prompt: `<div style="text-align: left;">I enjoy trying out the functions of new technical systems.</div>`, name: 'Q2', labels: likert_scale},
-                {prompt: `<div style="text-align: left;">Primarily, I deal with technical systems because I have to.</div>`, name: 'Q3', labels: likert_scale},
-                {prompt: `<div style="text-align: left;">When I encounter a new technical system, I thoroughly try it out.</div>`, name: 'Q4', labels: likert_scale},
-                {prompt: `<div style="text-align: left;">I really enjoy spending time getting to know a new technical system.</div>`, name: 'Q5', labels: likert_scale},
-                {prompt: `<div style="text-align: left;">It is enough for me that a technical system works; I don’t care how or why.</div>`, name: 'Q6', labels: likert_scale},
-                {prompt: `<div style="text-align: left;">I try to understand exactly how a technical system works.</div>`, name: 'Q7', labels: likert_scale},
-                {prompt: `<div style="text-align: left;">It is enough for me to know the basic functions of a technical system.</div>`, name: 'Q8', labels: likert_scale},
-                {prompt: `<div style="text-align: left;">I try to make full use of the capabilities of a technical system.</div>`, name: 'Q9', labels: likert_scale},
-            ],
-            randomize_question_order: true,
-            button_label: "Next >",
-            on_load: function () {
-                const btn = document.querySelector(".jspsych-btn");
+        var taegsScale = ["Strongly disagree", "Somewhat disagree", "Neither agree nor disagree", "Somewhat agree", "Strongly agree"];
+        var instructions_taegs = {
+                    type: jsPsychHtmlKeyboardResponse,
+                    choices: "b",
+                    stimulus: `
+                        <div>
+                            <p>This next questionnaire explores your personal opinion on various aspects of electronic devices, and your experience using these devices.</p>
+                            <p>The term "electronic devices" refers to devices such as computers, tablets, cell phones, digital cameras, smartwatches, digital smart home assistants, ATMs, ticket machines or new systems in cars such as navigation systems.</p>
+                            <p>We are not referring to tools such as drills, saws, hammers, lawn mowers or simple household appliances such as toasters, hand mixers, kettles, or vehicles and vehicle engines.</p>
+                            <p> Press the b key to continue. </p>
+                        </div>
+                    `
+                };
 
-                if (btn) {
-                    btn.style.display = "block";
-                    btn.style.marginLeft = "auto";   // Button on the right side
-                    btn.style.marginRight = "0";
-                }
-            }
+        var taegs = {
+            type: jsPsychSurveyLikert,
+            preamble: "Below you will find a series of statements. For each statement, please indicate how it applies to you personally. To do so, check the box on the right that best matches your opinion.",
+            scale_width: 450,
+            data: {task: 'taegs', trty: 'questions'},
+            questions: [
+                {prompt: "Electronic devices lead to intellectual impoverishment.", name: 'taegs_1', labels: taegsScale, required: true},
+                {prompt: "Electronic devices make my everyday life easier.", name: 'taegs_2', labels: taegsScale, required: true},
+                {prompt: "I am excited when a new electronic device comes on the market.", name: 'taegs_3', labels: taegsScale, required: true},
+                {prompt: "I know a lot about electronic devices.", name: 'taegs_4', labels: taegsScale, required: true}
+            ]
         };
+
 
 
         // End trial
@@ -352,7 +342,7 @@
 
         timeline.push(trial_decision);
         timeline.push(trial_manipulation); 
-        timeline.push(trial_affinity);
+        timeline.push(instructions_taegs, taegs);
 
 
 
