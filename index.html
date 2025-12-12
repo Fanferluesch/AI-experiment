@@ -9,6 +9,7 @@
     <script src="https://unpkg.com/@jspsych/plugin-html-slider-response@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-survey-likert@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-survey-multi-choice@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.3"></script>
     <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" />
     <link href="style.css" rel="stylesheet" type="text/css"></link>
         
@@ -35,7 +36,7 @@
             type: jsPsychSurveyMultiChoice,
             // Add a specific class for styling this trial
             css_classes: ['final-attention-check'],
-            button_label: "Weiter",
+            button_label: "Continue",
             data: {
                 task: 'attention_final',
                 resp_trial : "attn_demo" // This key is used in your on_finish filter
@@ -259,14 +260,14 @@
         // Manipulation check trial
         const trial_manipulation = {
             type: jsPsychHtmlSliderResponse,
-            stimulus: `<div style="margin-bottom: 60px;"> <h2>How high do you perceive your personal risk to be in this scenario?</h2> </div>`,
+            stimulus: `<div style="margin-bottom: 60px;"> <h2>How risky did the situation in the scenario feel to you?</h2> </div>`,
             require_movement: true,
             labels: [
-                "<div style='line-height: 1;'><p>1</p><p>Very low</p></div>",
-                "<div style='line-height: 1;'><p>2</p><p>Low</p></div>",
-                "<div style='line-height: 1;'><p>3</p><p>Neutral</p></div>",
-                "<div style='line-height: 1;'><p>4</p><p>High</p></div>",
-                "<div style='line-height: 1;'><p>5</p><p>Very High</p></div>"
+                "Not risky at all",
+                "",
+                "",
+                "",
+                "Very risky"
             ],
             step: 25,
             button_label: "Next >",
@@ -297,6 +298,8 @@
                     `
                 };
 
+                //TODO: mobil nutzbar machen
+
         var taegs = {
             type: jsPsychSurveyLikert,
             preamble: "Below you will find a series of statements. For each statement, please indicate how it applies to you personally. To do so, check the box on the right that best matches your opinion.",
@@ -314,17 +317,22 @@
 
         // End trial
         const trial_end = {
-            type: jsPsychInstructions,
+            type: jsPsychHtmlKeyboardResponse,
             pages: [
             `<div style="text-align: right;">
                 <div style="text-align: left; width: 1000px;">
                 <h1 style="line-height: 1.2;">Thank you for your participation!</h1>
-                <p>The experiment is now over. You may close this window.</p>
+                <p>Thank you for taking part. In this study, we examined how people prefer decisions to be made—by humans, 
+                    AI systems, or both—across different everyday and medical-style scenarios that varied in risk level and 
+                    in the reliability of the human, AI, or combined decision option.</p>
+                <br> <br>
+                <p> Press any key on the keyboard or press the button below to finish the experiment. Please wait until you are 
+                    redirected to Prolific. </p> 
             </div>`
             ],
             show_clickable_nav: false
         };
-
+            //TODO: mobil nutzbar machen
 
         /* 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
