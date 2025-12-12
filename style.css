@@ -1,0 +1,31 @@
+
+/* --- Styling for the Final Attention Check --- */
+
+/* Style the prompt paragraph */
+.final-attention-check p.jspsych-survey-multi-choice-text {
+    width: 70%;                 /* Adjust width as desired */
+    max-width: 1200px;           /* Optional max width */
+    margin: 20px auto 30px auto;/* Top auto Right Bottom auto Left -> centers block */
+    text-align: justify;         /* Center align text (or use 'left') */
+    line-height: 1.6;           /* Improve readability */
+    font-size: 1.1em;           /* Slightly larger text if desired */
+    /* border: 1px solid red; */ /* Uncomment to test selector */
+}
+
+/* Style the container for the radio buttons - Adjust */
+.final-attention-check .jspsych-survey-multi-choice-options {
+    margin-top: 30px; /* Increased top margin slightly for better spacing */
+    /* text-align: center; */ /* No longer needed for centering block elements */
+    /* border: 1px solid blue; */
+}
+
+/* Style each individual radio button option - Adjust */
+.final-attention-check .jspsych-survey-multi-choice-option {
+    display: block;             /* CHANGE: Stack options vertically */
+    width: fit-content;         /* CHANGE: Set width based on content (helps centering) */
+                                /* Use 'auto' if 'fit-content' isn't supported/working */
+    margin: 15px auto;          /* CHANGE: Increased vertical spacing, auto L/R margins CENTER the block */
+    text-align: left;           /* Keep label text left-aligned with radio button */
+    padding: 8px 15px;          /* Increased padding slightly */
+    /* border: 1px solid green; */
+}

@@ -10,6 +10,7 @@
     <script src="https://unpkg.com/@jspsych/plugin-survey-likert@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-survey-multi-choice@2.1.0"></script>
     <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <link href="style.css" rel="stylesheet" type="text/css"></link>
         
   </head>
     <body>
@@ -26,31 +27,30 @@
             type: jsPsychPreload,
             images: ['img/human.png', 'img/ai.png']
         };
-        timeline.push(preload); // Push
+        
 
         // Trash question trial
-        const trial_trash = {
+
+        var attention_final = {
             type: jsPsychSurveyMultiChoice,
+            // Add a specific class for styling this trial
+            css_classes: ['final-attention-check'],
+            button_label: "Weiter",
+            data: {
+                task: 'attention_final',
+                resp_trial : "attn_demo" // This key is used in your on_finish filter
+            },
             questions: [
-                {
-                    prompt: "<h2 style='width: 1000px;'>Did you actually read the previous scenario, or did you just skip through it? Please be honest. Your answer won't have any negative consequences.</h2>", 
-                    name: 'trash', 
-                    options: ["Yes, I read the scenario", "No, I didn't read the scenario"], 
-                    required: true,
-                    horizontal: true
-                }
-            ],
-            button_label: "Next >",
-            on_load: function () {
-                const btn = document.querySelector(".jspsych-btn");
-                if (btn) {
-                    btn.style.display = "block";
-                    btn.style.marginLeft = "auto";   // Button on the right side
-                    btn.style.marginRight = "0";
-                }
+            {
+                    prompt: "One last question: Can your responses be used for the study analysis? <br> <br> This answer is especially important for us and the results of the study. Your response to this question is completely anonymous. " +
+                    "Please answer honestly; it is not a problem if you say that the data should not be used for any reason (e.g., if you simply 'clicked through,' or if you did not seriously answer the questions).",
+                options: ["Yes, my responses can be used.", "No, my responses should not be used."],
+                horizontal: false,
+                required: true,
+                name: 'attention_final'
             }
-        };
-        timeline.push(trial_trash); // Push
+            ]
+        }
 
 
         // Decision page
@@ -253,7 +253,7 @@
             on_finish: function(data) {
             }
         };
-        timeline.push(trial_decision); // Push
+        
 
 
         // Manipulation check trial
@@ -280,7 +280,6 @@
                 }
             }
         };
-        timeline.push(trial_manipulation); // Push
 
 
         // affinity for technology trial
@@ -321,7 +320,6 @@
                 }
             }
         };
-        timeline.push(trial_affinity); // Push
 
 
         // End trial
@@ -336,7 +334,31 @@
             ],
             show_clickable_nav: false
         };
+
+
+        /* 
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        
+        Push things to timeline 
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        */
+        
+        timeline.push(preload); // Push
+
+        timeline.push(trial_decision);
+        timeline.push(trial_manipulation); 
+        timeline.push(trial_affinity);
+
+
+
+        timeline.push(attention_final); 
         timeline.push(trial_end); // Push
+
 
 
         //Run the experiment
