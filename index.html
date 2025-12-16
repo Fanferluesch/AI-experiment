@@ -6,7 +6,6 @@
     <script src="https://unpkg.com/@jspsych/plugin-instructions@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-preload@2.1.0"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-html-slider-response@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-survey-likert@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-survey-multi-choice@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.3"></script>
@@ -36,6 +35,7 @@
             images: ['img/human.png', 'img/ai.png']
         };
         
+        // Variable scenarios
         const scenarios = [
             { domain: "application", risk: "low", text: application_low_risk },
             { domain: "application", risk: "high", text: application_high_risk },
@@ -46,6 +46,7 @@
         const this_scenario =
             scenarios[Math.floor(Math.random() * scenarios.length)]; 
 
+        // Variable reliabilities
         const values = [70, 77, 84, 91, 98];
 
         const sampled_values = Array.from({ length: 3 }, () =>
@@ -56,7 +57,8 @@
         const ai_reliability = sampled_values[1];
         const hybrid_reliability = sampled_values[2];
 
-        const min_viewing_time_scenario = 3000; //TODO: kann man hier ändern, wie lange Leute das Szenario lesen müssen bevor sie weitermachen können
+        //Variable minimum viewing time for scenario
+        const min_viewing_time_scenario = 10000;
 
         // ADD Condition information to the data
         jsPsych.data.addProperties({
@@ -99,26 +101,6 @@
                 }, min_viewing_time_scenario);
             }
         };
-
-        // Trash question trial
-        const attention_final = {
-            type: jsPsychSurveyMultiChoice,
-            // Add a specific class for styling this trial
-            css_classes: ['final-attention-check'],
-            button_label: "Continue",
-            data: {task: 'attention_final', trty: 'questions'},
-            questions: [
-            {
-                    prompt: "One last question: Can your responses be used for the study analysis? <br> <br> This answer is especially important for us and the results of the study. Your response to this question is completely anonymous. " +
-                    "Please answer honestly; it is not a problem if you say that the data should not be used for any reason (e.g., if you simply 'clicked through,' or if you did not seriously answer the questions).",
-                options: ["Yes, my responses can be used.", "No, my responses should not be used."],
-                horizontal: false,
-                required: true,
-                name: 'attention_final'
-            }
-            ]
-        }
-
 
         // Decision page
         const trial_decision = {
@@ -324,8 +306,6 @@
             }
         };
         
-
-
         // Manipulation check trial
         const risk_scale = ["Not risky at all", "", "","", "", "", "Very risky"];
 
@@ -336,8 +316,6 @@
                 {prompt: "How risky did the situation in the scenario feel to you?", name: 'risk', labels: risk_scale, required: true},
             ]
         };
-
-
 
         // affinity for technology trial
         const taegsScale = ["Strongly disagree", "Somewhat disagree", "Neither agree nor disagree", "Somewhat agree", "Strongly agree"];
@@ -373,7 +351,6 @@
                     `
                 };
 
-
         const taegs = {
             type: jsPsychSurveyLikert,
             preamble: "Below you will find a series of statements. For each statement, please indicate how it applies to you personally. To do so, check the box on the right that best matches your opinion.",
@@ -387,7 +364,24 @@
             ]
         };
 
-
+        // Trash question trial
+        const attention_final = {
+            type: jsPsychSurveyMultiChoice,
+            // Add a specific class for styling this trial
+            css_classes: ['final-attention-check'],
+            button_label: "Continue",
+            data: {task: 'attention_final', trty: 'questions'},
+            questions: [
+            {
+                    prompt: "One last question: Can your responses be used for the study analysis? <br> <br> This answer is especially important for us and the results of the study. Your response to this question is completely anonymous. " +
+                    "Please answer honestly; it is not a problem if you say that the data should not be used for any reason (e.g., if you simply 'clicked through,' or if you did not seriously answer the questions).",
+                options: ["Yes, my responses can be used.", "No, my responses should not be used."],
+                horizontal: false,
+                required: true,
+                name: 'attention_final'
+            }
+            ]
+        }
 
         // End trial
         const trial_end = {
@@ -442,15 +436,11 @@
         timeline.push(trial_manipulation); 
         timeline.push(instructions_taegs, taegs);
 
-
-
         timeline.push(attention_final); 
-        timeline.push(trial_end); // Push
-
-
+        timeline.push(trial_end);
 
         //Run the experiment
         jsPsych.run(timeline);
-    
+
   </script>
 </html>
