@@ -182,7 +182,7 @@
                 <div id="options-container" style="display:flex;gap:30px;justify-content:left;flex-wrap:wrap; height: 514px;">
                 ${options_html}
                 </div>
-                <div style="text-align:right;margin-top:24px;">
+                <div style="text-align:center;margin-top:24px;">
                 <button id="next-button" class="jspsych-btn" disabled style="float:right;" disabled>Next ></button>
                 </div>
             `,
@@ -277,7 +277,33 @@
             data: {task: 'risk', trty: 'questions'},
             questions: [
                 {prompt: "How risky did the situation in the scenario feel to you?", name: 'risk', labels: risk_scale, required: true},
-            ]
+            ],
+            button_label: "Next >",
+            on_load: function () {
+                const btn = document.querySelector(".jspsych-btn");
+
+                if (!btn) return;
+                // initial disabled look
+                btn.disabled = true;
+                btn.style.opacity = "0.5";
+                btn.style.cursor = "not-allowed";
+                btn.style.display = "block";
+                btn.style.marginLeft = "auto";
+                btn.style.marginRight = "0";
+
+                // Get Likert-Inputs 
+                const inputs = document.querySelectorAll(
+                    "input[type='radio']"
+                );
+
+                inputs.forEach(input => {
+                    input.addEventListener("change", () => {
+                    btn.disabled = false;
+                    btn.style.opacity = "1";
+                    btn.style.cursor = "pointer";
+                    });
+                });
+                }
         };
 
         // affinity for technology trial
@@ -304,10 +330,9 @@
                             <p>This next questionnaire explores your personal opinion on various aspects of electronic devices, and your experience using these devices.</p>
                             <p>The term "electronic devices" refers to devices such as computers, tablets, cell phones, digital cameras, smartwatches, digital smart home assistants, ATMs, ticket machines or new systems in cars such as navigation systems.</p>
                             <p>We are not referring to tools such as drills, saws, hammers, lawn mowers or simple household appliances such as toasters, hand mixers, kettles, or vehicles and vehicle engines.</p>
-                            <p> Press the any key to continue or press the button below. </p>
-                        <div style="text-align: center; margin-top: 16px;">
+                        <div style="text-align: center; margin-top: 24px; float:right;">
                             <button id="continue-btn" class="jspsych-btn">
-                            Continue
+                            Next >
                             </button>
                         </div>
                         </div>
@@ -324,7 +349,38 @@
                 {prompt: "Electronic devices make my everyday life easier.", name: 'taegs_2', labels: taegsScale, required: true},
                 {prompt: "I am excited when a new electronic device comes on the market.", name: 'taegs_3', labels: taegsScale, required: true},
                 {prompt: "I know a lot about electronic devices.", name: 'taegs_4', labels: taegsScale, required: true}
-            ]
+            ],
+            button_label: "Next >",
+            on_load: function() {
+                const btn = document.querySelector(".jspsych-btn");
+                if (!btn) return;
+
+                // initial disabled style
+                btn.disabled = true;
+                btn.style.opacity = "0.5";
+                btn.style.cursor = "not-allowed";
+                btn.style.display = "block";
+                btn.style.marginLeft = "auto";
+                btn.style.marginRight = "0";
+
+                // Get inputs
+                const inputs = document.querySelectorAll("input[type='radio']");
+
+                inputs.forEach(input => {
+                    input.addEventListener("change", () => {
+                        // check if all questions are answered
+                        const allAnswered = Array.from(
+                            document.querySelectorAll("div.jspsych-survey-likert-question")
+                        ).every(q => q.querySelector("input[type='radio']:checked"));
+
+                        if (allAnswered) {
+                            btn.disabled = false;
+                            btn.style.opacity = "1";
+                            btn.style.cursor = "pointer";
+                        }
+                    });
+                });
+            }
         };
 
         // Trash question trial
@@ -332,19 +388,49 @@
             type: jsPsychSurveyMultiChoice,
             // Add a specific class for styling this trial
             css_classes: ['final-attention-check'],
-            button_label: "Continue",
+            button_label: "Next >",
             data: {task: 'attention_final', trty: 'questions'},
             questions: [
-            {
+                {
                     prompt: "One last question: Can your responses be used for the study analysis? <br> <br> This answer is especially important for us and the results of the study. Your response to this question is completely anonymous. " +
                     "Please answer honestly; it is not a problem if you say that the data should not be used for any reason (e.g., if you simply 'clicked through,' or if you did not seriously answer the questions).",
-                options: ["Yes, my responses can be used.", "No, my responses should not be used."],
-                horizontal: false,
-                required: true,
-                name: 'attention_final'
-            }
-            ]
-        }
+                    options: ["Yes, my responses can be used.", "No, my responses should not be used."],
+                    horizontal: false,
+                    required: true,
+                    name: 'attention_final'
+                }
+            ],
+             on_load: function() {
+                const btn = document.querySelector(".jspsych-btn");
+                if (!btn) return;
+
+                // initial disabled style
+                btn.disabled = true;
+                btn.style.opacity = "0.5";
+                btn.style.cursor = "not-allowed";
+                btn.style.display = "block";
+                btn.style.marginLeft = "auto";
+                btn.style.marginRight = "0";
+
+                // Get inputs
+                const inputs = document.querySelectorAll("input[type='radio'], input[type='checkbox']");
+
+                inputs.forEach(input => {
+                    input.addEventListener("change", () => {
+                        // check if all questions are answered
+                        const allAnswered = Array.from(
+                            document.querySelectorAll("div.jspsych-survey-multi-choice-question")
+                        ).every(q => q.querySelector("input[type='radio']:checked"));
+
+                        if (allAnswered) {
+                            btn.disabled = false;
+                            btn.style.opacity = "1";
+                            btn.style.cursor = "pointer";
+                        }
+                    });
+                });
+            }   
+        };
 
         // End trial
         const trial_end = {
@@ -369,9 +455,9 @@
                     redirected to Prolific. </p> 
 
 
-                <div style="text-align: center; margin-top: 16px;">
+                <div style="text-align: center; margin-top: 24px; float:right;">
                             <button id="continue-btn" class="jspsych-btn">
-                            Continue
+                            End Experiment
                             </button>
                         </div>
             </div>`
