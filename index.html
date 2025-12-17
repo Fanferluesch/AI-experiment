@@ -12,7 +12,28 @@
     <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" />
     <link href="style.css" rel="stylesheet" type="text/css"></link>
     <script src="scenarios.js"> </script>  
-        
+    <style>
+        /* reduce margins between likert scales */
+        .jspsych-survey-likert-preamble {
+            margin-bottom: 50px !important;
+        }
+        ul.jspsych-survey-likert-opts {
+            padding-bottom: 32px !important;
+        }
+        label.jspsych-survey-likert-statement {
+            padding-top: 0px !important;
+        }
+        /* move options in final attention check left */
+        .final-attention-check div.jspsych-survey-multi-choice-option {
+            margin: 0px !important;
+            text-align: left;    
+        }
+        /* disable * in final attention check*/
+        .final-attention-check .required {
+            display: none !important;
+            visibility: hidden !important;
+        }
+    </style>
   </head>
     <body>
     </body>
@@ -75,7 +96,7 @@
             type: jsPsychInstructions,
             pages: [
             `<div style="text-align: right;">
-                <div style="text-align: left; width: 1000px;">
+                <div style="text-align: left; width: 800px;">
                 <h2>Welcome! Imagine the Following Scenario</h2>
                 <p>${this_scenario.text}</p>
             </div>`
@@ -140,13 +161,13 @@
         });
 
         const options_html = shuffled_options.map(opt => `
-            <div class="option-button" data-value="${opt.value}" style="width:300px;">
-                <div style="cursor:pointer;padding:24px;border:3px solid #ccc;border-radius:10px;height:264px;text-align:center;">
+            <div class="option-button" data-value="${opt.value}" style="width:250px;">
+                <div style="cursor:pointer;padding:20px;border:3px solid #ccc;border-radius:10px;height:264px;text-align:center;">
                 <div style="display:flex;justify-content:center;gap:8px;margin-bottom:10px;">
                     ${opt.images.join("")}
                 </div>
                 <p style="font-weight:bold;">${opt.label}</p>
-                <div style="text-align:left;color:#555;border-top:2px solid #ccc;padding-top:16px;">
+                <div style="text-align:left;border-top:2px solid #ccc;padding-top:16px;">
                     The ${opt.label} is ${opt.reliability}% reliable in their decisions.
                 </div>
                 </div>
@@ -160,7 +181,7 @@
                     </div>
                     <!-- Box -->
                     <div style="
-                        padding:24px;
+                        padding:20px;
                         border:2px solid #ccc;
                         border-radius:10px;
                         background:#ffffff;
@@ -174,12 +195,12 @@
         const trial_decision = {
             type: jsPsychHtmlButtonResponse,
             stimulus: `
-            <div style="text-align: left; height: 800px; width: 1000px;">
+            <div style="text-align: left; height: 800px; width: 800px;">
                 <p style="margin-bottom: -16px;"><b>Your scenario:</b></p>
                 <p style="margin-bottom: 40px; height: 88px;">${this_scenario.text}</p>
-                <h2 style="margin-bottom: 32px; text-align: left;">By whom would you want to be evaluated in this situation?</h2>
+                <h3 style="margin-bottom: 32px; text-align: left;">By whom would you want to be evaluated in this situation?</h3>
                 
-                <div id="options-container" style="display:flex;gap:30px;justify-content:left;flex-wrap:wrap; height: 514px;">
+                <div id="options-container" style="display:flex;gap:20px;justify-content:left;flex-wrap:wrap; height: 514px;">
                 ${options_html}
                 </div>
                 <div style="text-align:center;margin-top:24px;">
@@ -270,13 +291,13 @@
         };
         
         // Manipulation check trial
-        const risk_scale = ["Not risky at all", "", "","", "", "", "Very risky"];
+        const risk_scale = ["<h3 style='margin-top: 16px;'>Not risky at all</h3>", "", "","", "", "", "<h3 style='margin-top: 16px;'>Very risky</h3>"];
 
         const trial_manipulation = {
             type: jsPsychSurveyLikert,
             data: {task: 'risk', trty: 'questions'},
             questions: [
-                {prompt: "How risky did the situation in the scenario feel to you?", name: 'risk', labels: risk_scale, required: true},
+                {prompt: "<h3 style='width: 800px; margin-bottom: 32px; text-align: left;'>How risky did the situation in the scenario feel to you?</h3>", name: 'risk', labels: risk_scale, required: true},
             ],
             button_label: "Next >",
             on_load: function () {
@@ -307,7 +328,7 @@
         };
 
         // affinity for technology trial
-        const taegsScale = ["Strongly disagree", "Somewhat disagree", "Neither agree nor disagree", "Somewhat agree", "Strongly agree"];
+        const taegsScale = ["<h3 style='margin-top: 16px;'>Strongly disagree</h3>", "<h3 style='margin-top: 16px;'>Somewhat disagree</h3>", "<h3 style='margin-top: 16px;'>Neither agree nor disagree</h3>", "<h3 style='margin-top: 16px;'>Somewhat agree</h3>", "<h3 style='margin-top: 16px;'>Strongly agree</h3>"];
         const instructions_taegs = {
                     type: jsPsychHtmlKeyboardResponse,
                     on_load: () => {
@@ -320,11 +341,11 @@
                     },
                     stimulus: `
                         <div style="
-                            max-width: 700px;
+                            max-width: 800px;
                             margin: 0 auto;
                             padding: 24px 28px;
                             line-height: 1.6;
-                            font-size: 16px;
+                            font-size: 18px;
                             text-align: left;
                         ">
                             <p>This next questionnaire explores your personal opinion on various aspects of electronic devices, and your experience using these devices.</p>
@@ -341,14 +362,14 @@
 
         const taegs = {
             type: jsPsychSurveyLikert,
-            preamble: "Below you will find a series of statements. For each statement, please indicate how it applies to you personally. To do so, check the box on the right that best matches your opinion.",
-            scale_width: 450,
+            preamble: "<p style='width: 800px; text-align: left; margin-bottom: 24px;'>Below you will find a series of statements. For each statement, please indicate how it applies to you personally. To do so, check the box on the right that best matches your opinion.</p>",
+            scale_width: 800,
             data: {task: 'taegs', trty: 'questions'},
             questions: [
-                {prompt: "Electronic devices lead to intellectual impoverishment.", name: 'taegs_1', labels: taegsScale, required: true},
-                {prompt: "Electronic devices make my everyday life easier.", name: 'taegs_2', labels: taegsScale, required: true},
-                {prompt: "I am excited when a new electronic device comes on the market.", name: 'taegs_3', labels: taegsScale, required: true},
-                {prompt: "I know a lot about electronic devices.", name: 'taegs_4', labels: taegsScale, required: true}
+                {prompt: "<h3 style='width: 800px; text-align: left; margin-bottom: 0px;'>Electronic devices lead to intellectual impoverishment.</h3>", name: 'taegs_1', labels: taegsScale, required: true},
+                {prompt: "<h3 style='width: 800px; text-align: left; margin-bottom: 0px;'>Electronic devices make my everyday life easier.</h3>", name: 'taegs_2', labels: taegsScale, required: true},
+                {prompt: "<h3 style='width: 800px; text-align: left; margin-bottom: 0px;'>I am excited when a new electronic device comes on the market.</h3>", name: 'taegs_3', labels: taegsScale, required: true},
+                {prompt: "<h3 style='width: 800px; text-align: left; margin-bottom: 0px;'>I know a lot about electronic devices.</h3>", name: 'taegs_4', labels: taegsScale, required: true}
             ],
             button_label: "Next >",
             on_load: function() {
@@ -392,8 +413,8 @@
             data: {task: 'attention_final', trty: 'questions'},
             questions: [
                 {
-                    prompt: "One last question: Can your responses be used for the study analysis? <br> <br> This answer is especially important for us and the results of the study. Your response to this question is completely anonymous. " +
-                    "Please answer honestly; it is not a problem if you say that the data should not be used for any reason (e.g., if you simply 'clicked through,' or if you did not seriously answer the questions).",
+                    prompt: `<div style='width: 800px; margin-bottom: 32px; text-align: left;'><h3>One last question: Can your responses be used for the study analysis?</h3>This answer is especially important for us and the results of the study. Your response to this question is completely anonymous.
+                            Please answer honestly; it is not a problem if you say that the data should not be used for any reason (e.g., if you simply 'clicked through' or if you did not seriously answer the questions).</div>`,
                     options: ["Yes, my responses can be used.", "No, my responses should not be used."],
                     horizontal: false,
                     required: true,
@@ -445,15 +466,14 @@
                     },
             stimulus:
             `<div style="text-align: right;">
-                <div style="text-align: left; width: 1000px;">
-                <h1 style="line-height: 1.2;">Thank you for your participation!</h1>
+                <div style="text-align: left; width: 800px;">
+                <h2 style="line-height: 1.2;">Thank you for your participation!</h2>
                 <p>Thank you for taking part. In this study, we examined how people prefer decisions to be made—by humans, 
                     AI systems, or both—across different everyday and medical-style scenarios that varied in risk level and 
                     in the reliability of the human, AI, or combined decision option.</p>
                 <br> <br>
                 <p> Press any key on the keyboard or press the button below to finish the experiment. Please wait until you are 
                     redirected to Prolific. </p> 
-
 
                 <div style="text-align: center; margin-top: 24px; float:right;">
                             <button id="continue-btn" class="jspsych-btn">
